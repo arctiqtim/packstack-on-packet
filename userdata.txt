@@ -1,0 +1,9 @@
+#cloud-config
+disable_root: false
+password: secret
+chpasswd:
+  list: |
+    root:secret
+    cloud-user:secret
+  expire: false
+ssh_pwauth: True

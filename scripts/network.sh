@@ -12,7 +12,7 @@ SUBNET=$1
 
 openstack role add --user admin --project demo admin
 openstack role add --user demo --project demo admin
-openstack network --share public
+openstack network set --share public
 
 # delete the demo public subnet
 OLD_SUBNET_ID=`openstack subnet show public_subnet -f value -c id`
@@ -29,23 +29,23 @@ DNS_NAMESERVER=`grep -i nameserver /etc/resolv.conf | head -n1 | cut -d ' ' -f2`
 openstack subnet create                         \
         --network public                        \
         --dns-nameserver $DNS_NAMESERVER        \
-        --subnet-range $SUBNET                  \
+        --subnet-range "$SUBNET"                  \
         --no-dhcp
-        $SUBNET
+        "$SUBNET"
 
 SUBNET_ID=`openstack subnet show $SUBNET -c id -f value`
 neutron router-gateway-set router1 public
 
 # create an internal network
-INTERNAL_SUBNET=192.168.10.0/24
+INTERNAL_SUBNET="192.168.10.0/24"
 
 openstack network create internal --share
 
 openstack subnet create                         \
         --network internal                      \
         --dns-nameserver $DNS_NAMESERVER        \
-        --subnet-range $INTERNAL_SUBNET         \
-        $INTERNAL_SUBNET
+        --subnet-range "$INTERNAL_SUBNET"         \
+        "$INTERNAL_SUBNET"
 
 ROUTER_ID=`openstack router show router1 -c id -f value`
 INTERNAL_SUBNET_ID=`openstack subnet show $INTERNAL_SUBNET -c id -f value`
